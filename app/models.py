@@ -1,5 +1,5 @@
 from . import db,login_manager
-from flask_login import current_user,UserMixin
+from flask_login import UserMixin
 from werkzeug.security import generate_password_hash,check_password_hash
 from datetime import datetime
 
@@ -9,7 +9,7 @@ def load_user(user_id):
     return User.query.get(user_id)
 
 
-class User (UserMixin,db.Model):
+class User (db.Model, UserMixin):
     __tablename__ = 'users'
     id = db.Column(db.Integer,primary_key = True)
     username = db.Column(db.String(255),unique = True,nullable = False)
@@ -107,3 +107,12 @@ class Subscriber(db.Model):
 
     def __repr__(self):
         return f'Subscriber {self.email}'
+
+# class Quotes:
+#     '''
+#     Quote class to define quote objects
+#     '''
+#     def __init__(self,id,author,quote):
+#         self.id=id
+#         self.author=author
+#         self.quote=quote
