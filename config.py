@@ -2,7 +2,7 @@ import os
 
 class Config:
     SECRET_KEY = '30011397'
-    SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:user@localhost/blogposts'
+    SQLALCHEMY_DATABASE_URI = SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:user@localhost/blogs'
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     MAIL_SERVER = 'smtp.gmail.com'
     MAIL_PORT = 587

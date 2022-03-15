@@ -1,0 +1,39 @@
+{% extends 'base.html'%}
+
+{% block content%}
+<div class='container'>
+    <div class='row'>
+        <div class='col-sm-2'>
+
+        </div>
+        <div class='col-sm-5'>
+            <div class="media content-section">
+                <div class="media-body">
+                    <h3>Quotes from Random People</h3>
+                    <p>{{quotes[1]}}</p>
+                    <h6 class="mr-4">{{quotes[2]}}</h6>
+                </div>
+            </div>
+        </div>
+        {% for post in posts %}
+        <div class='col-sm-5'>
+            <article class="media content-section">
+               <h3>Blog Posts from users</h3>
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ post.author.username}}</a>
+                        <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
+                    </div>
+                    <h2><a class="article-title" href="{{url_for('.post',post_id=post.id)}}">{{post.title}}</a></h2>
+                    <p class="article-content">{{ post.content }}</p>
+
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+
+{% endfor %}
+
+
+{% endblock content%}

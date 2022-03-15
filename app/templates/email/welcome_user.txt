@@ -1,0 +1,3 @@
+Hello {{user.username}}
+Welcome to Personal Pitches
+Thank you for signing up. Here in your {{title}} you can post, read, like and comment on all your favourite pitches.

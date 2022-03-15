@@ -1,0 +1,37 @@
+{% extends 'base.html'%}
+
+{% block content %}
+<div class="container">
+  <div class="row">
+    {% if user == current_user %}
+    <div class="col-md-4" style="border: solid black; height: 220px; width: 250px;">
+      {% if user.profile_pic_path %}
+      <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt=""  height="200px">
+      {%else%}
+      <img src="{{url_for('static',filename='logo-removebg-preview.png')}}" alt=""  height="100px">
+      <p>Upload your Profile picture for your friends to identify you easily</p>
+      {% endif %}
+    </div>
+    {% endif %}
+    <div class="col-md-8">
+      <h3> {{user.username| capitalize}} </h3>
+      {% if user.bio %}
+      <p><button class="btn-outline-info">My bio:</button> {{user.bio}}</p>
+      {%else%}
+      <p> {{user.username| capitalize}} has no bio </p>
+      {% endif %}
+      {% if user == current_user %}
+      <a href="{{url_for('main.update_profile',uname=user.username)}}">Add Bio</a>
+      {% endif %}
+      <br><br>
+      {% if user == current_user %}
+      <p>Want to add a profile picture?</p>
+      <form action="{{url_for('main.update_pic',uname=user.username)}}" method="post" enctype="multipart/form-data">
+        <input type="file" name="photo" class="form-control" required>
+        <input type="submit">
+      </form>
+      <a href="{{url_for('main.profile',uname=current_user.username)}}">Add a profile photo</a>
+      {% endif %}
+    </div>
+  </div>
+  {% endblock %}
