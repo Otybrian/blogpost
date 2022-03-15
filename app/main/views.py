@@ -75,6 +75,7 @@ def save_picture(form_picture):
     picture_path=os.path.join(create_app.root_path,'static/css/photos',picture_fn)
     form_picture.save(picture_path)
     return picture_fn
+    
 @main.route('/account',methods=['GET','POST'])
 @login_required
 def account():
@@ -108,8 +109,8 @@ def new_post():
         post =Post(title=form.title.data,content=form.content.data,author=current_user)
         db.session.add(post)
         db.session.commit()
-        flash("Your post has been created",'success')
-        return redirect(url_for('.home'))
+        flash("Your blog has been created",'success')
+        return redirect(url_for('main.home'))
     return render_template('create_post.html',form=form,legend='New Post')
 
 @main.route('/post/<int:post_id>')
