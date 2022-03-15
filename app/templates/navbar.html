@@ -24,7 +24,7 @@
                 <li><a class="nav-item nav-link" href="{{ url_for('main.account')}}">Account</a></li>
               <li><a class="nav-item nav-link" href="{{ url_for('.logout')}}">Logout</a></li>
               {% else %}
-              <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}"">Login</a></li>
+              <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}">Login</a></li>
               <li><a class="nav-item nav-link" href="{{ url_for('auth.register')}}">Register</a></li>
                {% endif%}
             </ul>

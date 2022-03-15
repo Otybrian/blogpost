@@ -4,7 +4,32 @@
 <div class='container'>
     <div class='row'>
         <div class='col-sm-2'>
-
+            <ul>
+                <li><button type="menu"><a href="/">Home</a></button></li><br>
+                <li><button type="menu"><a href="/about">About</a></button></li><br>
+                {% if current_user.is_authenticated %}
+                <li><button type="menu"><a href="/">My Profile</a></button></li><br>
+                <li><button type="menu"><a href="/">Update Profile</a></button></li><br>
+                <li><button type="menu"><a href="/">Write a Blog</a></button></li>
+                {% else %}
+                <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}">Login</a></li>
+                {%endif%}
+            </ul>
+        </div>
+        <div class='col-sm-5'>
+            <article class="media content-section">
+                {% for post in posts %}
+                <h3>Blog Posts from users</h3>
+                <div class="media-body">
+                    <div class="article-metadata">
+                        <a class="mr-2" href="#">{{ post.author.username}}</a>
+                        <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
+                    </div>
+                    <h2><a class="article-title" href="{{url_for('.post',post_id=post.id)}}">{{post.title}}</a></h2>
+                    <p class="article-content">{{ post.content }}</p>
+                </div>
+                {% endfor %}
+            </article>
         </div>
         <div class='col-sm-5'>
             <div class="media content-section">
@@ -15,25 +40,10 @@
                 </div>
             </div>
         </div>
-        {% for post in posts %}
-        <div class='col-sm-5'>
-            <article class="media content-section">
-               <h3>Blog Posts from users</h3>
-                <div class="media-body">
-                    <div class="article-metadata">
-                        <a class="mr-2" href="#">{{ post.author.username}}</a>
-                        <small class="text-muted">{{post.date_posted.strftime('%Y-%m-%d')}}</small>
-                    </div>
-                    <h2><a class="article-title" href="{{url_for('.post',post_id=post.id)}}">{{post.title}}</a></h2>
-                    <p class="article-content">{{ post.content }}</p>
-
-                </div>
-            </article>
-        </div>
     </div>
 </div>
 
-{% endfor %}
+
 
 
 {% endblock content%}
