@@ -11,6 +11,8 @@ class Config:
     MAIL_USERNAME = 'otbrayo@gmail.com'
     MAIL_PASSWORD = 'Year2030#'
     UPLOADED_PHOTOS_DEST ='app/static/photos'
+    SIMPLEMDE_JS_IIFE = True
+    SIMPLEMDE_USE_CDN = True
 
 class ProdConfig(Config):
 
