@@ -1,14 +1,23 @@
 from ..requests import get_quotes
-from app.main.forms import UpdateProfile, PostForm, CommentForm
+from app.main.forms import UpdateProfile, PostForm, CommentForm, UploadForm
 from flask import render_template,abort,redirect,flash,url_for,Blueprint,request
 from . import main
 from .. import db, create_app
 import secrets
 import os
 from flask_login import login_user,logout_user,login_required,current_user
-from ..models import Post, User
+from ..models import Post, User, Comment
 from ..auth.forms import LoginForm, RegistrationForm
 from flask_sqlalchemy import SQLAlchemy
+from flask import send_from_directory  
+  
+
+
+
+
+@main.route('/favicon.ico') 
+def favicon(): 
+    return send_from_directory(os.path.join(main.root_path, 'static'), 'favicon.ico', mimetype='image/vnd.microsoft.icon')
 
 
 
@@ -68,37 +77,57 @@ def logout():
     logout_user()
     return redirect(url_for("main.home"))
 
-def save_picture(form_picture):
-    random_hex=secrets.token_hex(8)
-    _,f_ext = os.path.splitext(form_picture.filename)
-    picture_fn =random_hex + f_ext
-    picture_path=os.path.join(create_app.root_path,'static/css/photos',picture_fn)
-    form_picture.save(picture_path)
-    return picture_fn
-    
-@main.route('/account',methods=['GET','POST'])
+@main.route('/user/<username>')
+def profile(username):
+    user = User.query.filter_by(username = username).first()
+    if user is None:
+        abort(404)
+
+    return render_template("profile/profile.html", user = user)
+
+@main.route('/user/<uname>/update/pic',methods= ['POST'])
 @login_required
-def account():
-    form =UpdateProfile()
-    if form.validate_on_submit():
-        if form.picture.data:
-            picture_file=save_picture(form.picture.data)
-            current_user.image_file=picture_file
-
-            
-        current_user.username=form.username.data
-        current_user.email=form.email.data
-        db.session.commit()
-        flash('Your account has been updated','success')
-        return redirect(url_for('.account'))
-    elif request.method=='GET':
-        form.username.data=current_user.username
-        form.email.data=current_user.email
-
-
-    image_file = url_for('static',filename='css/photos/' + current_user.image_file)
+def save_picture(username):
+    form = UploadForm
+    random_hex=secrets.token_hex(8)
+    _,f_ext = os.path.splitext(form.data)
+    picture_fn =random_hex + f_ext
+    picture_path=os.path.join(main.root_path,'static/photos',picture_fn)
+    form.save(picture_path)
+    return redirect(url_for('main.profile',uname=username,  picture_fn='profile_picture'))
     
-    return render_template('account.html',image_file=image_file,form=form)
+    
+
+@main.route('/user/<uname>/update',methods = ['GET','POST'])
+@login_required
+def update_profile(uname):
+    user = User.query.filter_by(username = uname).first()
+    if user is None:
+        abort(404)
+
+    form = UpdateProfile()
+
+    if form.validate_on_submit():
+        user.bio = form.bio.data
+
+        db.session.add(user)
+        db.session.commit()
+
+        return redirect(url_for('.profile',uname=user.username))
+
+    return render_template('profile/update.html',form =form)
+
+@main.route('/comment/new', methods = ['GET','POST'])
+@login_required
+def new_comment():
+    form = CommentForm()
+    if form.validate_on_submit():
+        comment = Comment(comment=form.comment.data)
+        db.session.add(comment)
+        db.session.commit()
+        flash('Your comment has been added successfully', 'success')
+        return redirect(url_for('main.home'))
+    return render_template('new_comment.html', form = form, legend = 'New Comment')
 
 
 @main.route('/post/new',methods=['GET','POST'])

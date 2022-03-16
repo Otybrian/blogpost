@@ -4,24 +4,40 @@
 <div class='container'>
     <div class='row'>
         <div class='col-sm-2'>
+            <h3>Quick Links</h3>
             <ul>
                 <li><button type="menu"><a href="/">Home</a></button></li><br>
                 <li><button type="menu"><a href="/about">About</a></button></li><br>
                 {% if current_user.is_authenticated %}
-                <li><button type="menu"><a href="/">My Profile</a></button></li><br>
+                <li><button type="menu"><a href="{{url_for('main.profile',username=current_user.username)}}">My Profile</a></button></li><br>
+                <li><a href="{{url_for('main.profile',username=current_user.username)}}">Add a profile photo</a></li>
                 <li><button type="menu"><a class="nav-item nav-link" href="/">Update Profile</a></button></li><br>
                 <li><button type="menu"> <a class="nav-item nav-link" href="{{ url_for('main.new_post')}}">Write a new Blog</a></button></li>
                 </li>
+                <article class="media content-section" style="border-bottom: solid black ;">
+        {% if current_user.profile_pic_path %}
+        <img src="{{url_for('static',filename=user.profile_pic_path)}}" alt="" class="img-fluid img-thumbnail">
+        {%else%}
+        <img src="{{url_for('static',filename='logo-removebg-preview.png')}}" alt="..." class="img-thumbnail">
+        
+        {% if current_user.is_authenticated %}
+        <p>No profile picture to display</p>
+        <a href="{{url_for('main.profile',username=current_user.username)}}">Add a profile photo</a>
+        {%else%}
+        <p><a href="{{url_for('auth.login')}}">Add a profile photo</a></p>
+        {%endif%}
+        {% endif %}
                 {% else %}
                 <li><a class="nav-item nav-link" href="{{url_for('auth.login')}}">Login</a></li>
                 {% endif %}
             </ul>
         </div>
-        <div class='col-sm-5'>
+        <div class='col-sm-5' style='border-right: 3px solid black' >
+            <h3>User Posts</h3>
             {% for post in posts %}
-            <article class="media content-section">
+            <article class="media content-section" style='border-bottom: solid black 3px;'>
                 <img class="rounded_circle article-img"
-                    src="{{ url_for('static',filename='css/photos/' + post.author.image_file)}}" alt="No image">
+                    src="{{ url_for('static',filename='css/photos/' + post.author.image_file)}}" alt="">
                 <div class="media-body">
                     <div class="article-metadata">
                         <a class="mr-2" href="#">{{ post.author.username}}</a>
@@ -29,8 +45,13 @@
                     </div>
                     <h2><a class="article-title" href="{{url_for('.post',post_id=post.id)}}">{{post.title}}</a></h2>
                     <p class="article-content">{{ post.content }}</p>
+                    <a  href="{{url_for('.post',post_id=post.id)}}"><p>Delete this blog</p><button type="submit" style="width: 30px"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash" viewBox="0 0 16 16">
+                        <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                        <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg></button></a>
                 </div>
-                <a class="nav-item nav-link" href="{{ url_for('main.update_post', post_id = post.id)}}">Update Blog</a>
+                <a class="nav-item nav-link" href="{{ url_for('main.update_post', post_id = post.id)}}">Update Blog</a><br>
+                <a class="nav-item nav-link" href="{{ url_for('main.new_comment')}}">Add a Comment</a>
             </article>
             {% endfor %}
         </div>
