@@ -67,5 +67,14 @@ class Comment(db.Model):
     date_posted = db.Column(db.DateTime, nullable=False, default=datetime.utcnow)
     post_id = db.Column(db.Integer, db.ForeignKey('posts.id'), nullable=False)
 
+    def save_comment(self):
+        db.session.add(self)
+        db.session.commit()
+
+    @classmethod
+    def get_comment(cls,id):
+        content = Comment.query.filter_by(post_id=id).all()
+        return content
+    
     def __repr__(self):
-        return f"Comment ('{self.title}', '{self.date_posted}')"
+        return f"Comment('{self.content}', '{self.date_posted}')"

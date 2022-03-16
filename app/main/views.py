@@ -26,7 +26,8 @@ def home():
     quotes=get_quotes()
     print(quotes)
     posts=Post.query.all()
-    return render_template("home.html",posts=posts,quotes=quotes)
+    
+    return render_template("home.html",posts=posts,quotes=quotes, uname = current_user)
 
 @main.route('/about')
 def about():
@@ -101,7 +102,7 @@ def save_picture(username):
 @main.route('/user/<uname>/update',methods = ['GET','POST'])
 @login_required
 def update_profile(uname):
-    user = User.query.filter_by(username = uname).first()
+    user = User.query.filter_by(username = uname ).first()
     if user is None:
         abort(404)
 
@@ -113,21 +114,28 @@ def update_profile(uname):
         db.session.add(user)
         db.session.commit()
 
-        return redirect(url_for('.profile',uname=user.username))
+        return redirect(url_for('main.profile', username = uname))
 
-    return render_template('profile/update.html',form =form)
+    return render_template('update.html',form =form)
 
 @main.route('/comment/new', methods = ['GET','POST'])
 @login_required
-def new_comment():
+def new_comment(post_id):
+    post = Comment.query.filter_by(post_id=post_id).first()
+    if post is None:
+        abort(404)
     form = CommentForm()
     if form.validate_on_submit():
-        comment = Comment(comment=form.comment.data)
-        db.session.add(comment)
+        new_comment = Comment(comment=form.content.data, post_id=post_id)
+        new_comment.save_comment()
+        db.session.add(new_comment)
         db.session.commit()
-        flash('Your comment has been added successfully', 'success')
-        return redirect(url_for('main.home'))
-    return render_template('new_comment.html', form = form, legend = 'New Comment')
+       
+        flash('You comment has been created!', 'success')
+        return redirect(url_for('main.post',post_id=post_id))
+    else:
+        content=Comment.query.order_by(Comment.content).all()
+    return render_template('new-comment.html', add='New Comment',post=post,comment=content,form=form)
 
 
 @main.route('/post/new',methods=['GET','POST'])

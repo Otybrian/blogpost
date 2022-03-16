@@ -15,7 +15,7 @@ class PostForm(FlaskForm):
     
     
 class CommentForm(FlaskForm):
-    comment = TextAreaField('Comment')
+    content = TextAreaField('Comment')
     submit = SubmitField('Submit')
 
 class UploadForm(FlaskForm):
