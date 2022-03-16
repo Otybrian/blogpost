@@ -1,7 +1,7 @@
 {% extends 'base.html'%}
 
 {% block content%}
-
+<div class = 'container'>
 <article class="media content-section">
     <img class="rounded_circle article-img" src="{{ url_for('static',filename='css/photos/' + post.author.image_file)}}" alt="No image">
 <div class="media-body">
@@ -49,5 +49,5 @@
       </div>
     </div>
   </div>
- 
+ </div>
 {% endblock content%}
